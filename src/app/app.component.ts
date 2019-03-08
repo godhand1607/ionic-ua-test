@@ -5,6 +5,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { TabsPage } from '../pages/tabs/tabs';
 
+declare let UAirship;
+
+
 @Component({
   templateUrl: 'app.html'
 })
@@ -17,6 +20,24 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
+
+      this.setupPushNotification();
     });
   }
+
+  private setupPushNotification() {
+    document.addEventListener('urbanairship.notification_opened', (event) => {
+      console.log('Notif opened: ' + JSON.stringify(event));
+    });
+
+    document.addEventListener('urbanairship.deep_link', (event) => {
+      console.log('DEEPLINK: ' + JSON.stringify(event));
+      // Navigate to a different page based on the "event.deepLink" data
+    });
+
+    UAirship.setUserNotificationsEnabled(true, (enabled) => {
+      console.log('User notifications are enabled! Fire away! ', enabled);
+    });
+  }
+
 }
